@@ -35,8 +35,9 @@ Every sonar notebook is only complete when it meets the following standard:
    - The first occurrence of a concept shows the direct implementation in the
      notebook itself, followed by the helper as a clean, reusable repetition —
      never a mystery shortcut.
-   - Each notebook opens the hands-on part with the standard "Teach it directly
-     first" preamble cell, applied throughout the track.
+   - Each notebook opens the hands-on part by moving naturally from the story
+     to the equations, then into code, printed results, and finally the same
+     calculation in reusable helper form.
 5. **Shared helpers for later reuse.**
    - Shared functionality belongs in the notebook-local helper package
      (`notebooks/helpers/`); later notebooks call the helper API instead of
@@ -45,20 +46,35 @@ Every sonar notebook is only complete when it meets the following standard:
    - The notebook ends by recalling the key equations and the main physical
      idea, closes the loop on the opening questions, and finishes with a short
      set of learner checks plus a stretch exercise.
+   - The notebook also provides a student-facing answer section that explains
+     the checkpoint questions, corrects the common mistakes in detail, and
+     gives the stretch exercise as a runnable code snippet with explanation.
+
+### Notebook and companion pairing
+
+Each notebook should have a matching physics companion in `docs/physics/`.
+The companion is read first and should set up the story, the symbols, and the
+physical interpretation the notebook will then work through in code. Keep the
+two aligned in sequence, but do not duplicate the same bridge sentence in both
+places.
 
 ### Required ordering inside every sonar notebook
 
 1. Chapter title and learning goals ("What this notebook teaches").
 2. Short narrative framing ("Where we are in the story").
 3. Setup and baseline values.
-4. "Teach it directly first" preamble before the first calculation.
+4. Story-to-equation transition before the first calculation.
 5. Core model or physical idea (with the governing equation, explained).
-6. Explicit worked calculations (by hand, values printed).
-7. Helper-based implementation (same idea, repeated cleanly).
+6. Explicit code calculations with printed results.
+7. Reusable helper form of the same calculation.
 8. Output and interpretation (plots that reinforce the lesson).
 9. "Checkpoint", "Common mistake", "Why the helpers exist", "Stretch".
 10. "Closing the loop" answers + "Summary" that connects back to the sonar
     story and to earlier notebooks in the track.
+11. "Answers and corrections" that explain the checkpoint questions,
+  the common mistakes, and the stretch exercise in detail.
+12. A runnable stretch snippet, when appropriate, with a short explanation of
+  what it demonstrates and why it matters.
 
 ---
 
@@ -152,8 +168,9 @@ Build in this sequence to move fastest:
 
 Each plan lists the learner goal, the required content, the code cells in
 order, and the trainer companion notes, mapped to the checklist's required
-ordering. For every notebook the "Teach it directly first" preamble
-(§1 ordering, step 4) sits above the first calculation cell.
+ordering. For every notebook the narrative should flow from the story to the
+equations, then to the code, the printed results, and finally the reusable
+helper form of the same calculation.
 
 ### Notebook 00 — Sonar intuition and baseline parameters
 
@@ -174,8 +191,8 @@ parameters were chosen.
 
 - Importing baseline constants from the local `helpers` package under
   `notebooks/helpers/`.
-- Duty-cycle calculation by hand.
-- Delay-to-range calculation `R = c·τ_delay / 2` by hand.
+- Duty-cycle calculation in code with printed explanation.
+- Delay-to-range calculation `R = c·τ_delay / 2` in code with printed explanation.
 - Delay in samples: 0.1 s at 10 kHz = 1000 samples.
 - A ping/listen timing diagram (narrow transmit bar, wide listening bar).
 
@@ -279,14 +296,14 @@ attenuated, noise-corrupted echo.
   noise is what makes it look different.
 - Keep a second-target stretch optional (overlapping echoes).
 
-### Notebook 04 — Matched filtering and range estimation
+### Notebook 04 — Correlation (matched filtering) and range estimation
 
-**Learner goal:** understand correlation as matched filtering and turn a
-compressed peak delay into a range in metres.
+**Learner goal:** understand correlation as the implementation of matched
+filtering, and turn a compressed peak delay into a range in metres.
 
 **Must contain:**
 
-- The matched filter as "slide a replica of the ping and look for the peak".
+- Correlation with a replica of the ping as the matched-filter operation.
 - Why the swept-ping peak is sharper than the tone-burst peak.
 - Peak location → sample delay → `R = c·τ_delay / 2`.
 - Raw echo vs compressed output comparison.
@@ -326,7 +343,7 @@ ping-to-ping phase advance into radial velocity.
 
 - Building the ping stack with phase rotation `2π·f_d·T` per ping.
 - The phase-advance plot at the target range bin.
-- Matched filtering every ping into range profiles.
+- Correlation-based matched filtering for every ping into range profiles.
 - FFT across pings at every range bin.
 - The range-Doppler heatmap with one blob at 75 m, 0.1 m/s.
 - The 0.5 m/s aliasing example for the "wrong speed" teaching point.
@@ -442,7 +459,7 @@ interferer while preserving the target.
 - Why steering alone leaves a sidelobe at −30° that the 30 dB-stronger
   interferer punches through.
 - The LCMV constraint `C^H w = [1, 0]` forcing a null on the interferer.
-- Applying the weights **before** the matched filter, then showing the
+- Applying the weights **before** the matched filter (correlation step), then showing the
   range-Doppler map before and after cancellation.
 
 **Code cells should show:**
@@ -488,11 +505,12 @@ artifacts.
 
 ### Notebook 11 — Capstone: synthetic aperture imaging
 
-**Learner goal:** combine the matched filter, the ping stack, and the steering
-vector into a two-dimensional image of the seafloor — the capstone project.
+**Learner goal:** combine the matched-filter / correlation step, the ping
+stack, and the steering vector into a two-dimensional image of the seafloor —
+the capstone project.
 
 **Pedagogy frame:** nothing here is new. The capstone reuses three tools the
-reader already holds: the matched filter (Chapter 04), the ping stack (Chapter
+reader already holds: the matched filter / correlation step (Chapter 04), the ping stack (Chapter
 05), and the steering-vector correlation (Chapters 07–09). Aperture compression
 along the track is the *same* correlation the reader has already run in range —
 only the axis changes. If it feels advanced, the framing is wrong; it must feel
@@ -507,7 +525,7 @@ like "we compress in the other direction now."
 - Geometry: a point target at 75 m appears in every ping at a slightly
   different delay because the platform moves; the phase history across the
   track is the *data* of the synthetic array.
-- Range compression: matched filter each row (review + reuse of Chapter 04).
+- Range compression: correlation / matched filter each row (review + reuse of Chapter 04).
 - Along-track (azimuth) compression: correlate the phase history with the
   steering/correlation kernel — the same operation as the matched filter,
   applied across the track.
@@ -524,7 +542,7 @@ like "we compress in the other direction now."
 
 - The moving-platform ping stack (stationary scene; platform travels at
   0.25 m/s).
-- Range-compressed stack (matched filter per row).
+- Range-compressed stack (correlation / matched filter per row).
 - The along-track correlation by hand for one target range.
 - The full 2-D synthetic-aperture image.
 - A resolution comparison panel: physical array vs synthetic aperture.
@@ -533,8 +551,9 @@ like "we compress in the other direction now."
 
 - Do not introduce motion-compensation, autofocus, or imaging jargon. The
   beginner capstone assumes a straight, constant-speed track — nothing fancy.
-- Emphasise "same tool, second axis": the seafloor image is a matched filter in
-  range and a matched filter in cross-range. The chapter is the payoff of
+- Emphasise "same tool, second axis": the seafloor image is a correlation /
+  matched-filter operation in range and a correlation / matched-filter
+  operation in cross-range. The chapter is the payoff of
   everything before it, not a new subject.
 - Close the whole track by having the learner say the full one-breath arc,
   ending with "…synthesize an image of the seafloor."
@@ -560,8 +579,9 @@ Organise helpers so each module's purpose is obvious at a glance:
 | `sas.py` | `along_track_positions`, `range_compress_stack`, `synthetic_aperture_image` (capstone, Chapter 11) |
 | `plotting.py` | Shared plotting style and panel labels |
 
-Rule from compliance item 5: each concept is built by hand in its own
-notebook first; only then is it packaged into these helpers for later reuse.
+Rule from compliance item 5: each concept is written once in the notebook,
+explained with its printed result, and then repeated in helper form so later
+notebooks can reuse the same calculation without rewriting it.
 
 ---
 
@@ -601,13 +621,17 @@ Before a sonar notebook is considered done:
 - The math is visible, explained in plain language, and connected to physics.
 - At least one cell computes the core quantity by hand; a helper reproduces the
   same result afterward.
-- The "Teach it directly first" preamble precedes the helper calls.
+- The notebook tells a clear story: physical setup, equation, code, printed
+  result, helper reuse.
 - Code cells are small, seeded, and include intermediate values.
 - The plots reinforce the lesson (transmit/listen diagram, sweep ramp, echo
   panels, beam patterns, RD map, track, before/after nulling, portfolio, and
   the capstone's synthetic-aperture image).
 - Checkpoint, common mistakes, stretch, closing-the-loop, and summary sections
   are present and sonar-faithful.
+- The notebook also includes a student-facing answers section after the
+  summary, with detailed explanations for the checkpoint questions, corrections
+  for the common mistakes, and a runnable stretch snippet where appropriate.
 - Later notebooks reuse `notebooks/helpers/` for repeated logic.
 - The chapter fits the sequence 00–11 and links back to the sonar intro story.
 - Notebook 11 re-uses the helpers and tools from earlier chapters; it does not

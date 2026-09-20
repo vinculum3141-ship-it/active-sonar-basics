@@ -1,7 +1,13 @@
 # Notebook 00 Physics Companion: Sonar Intuition and Baseline Parameters
 
-This companion stands apart from the notebook code. Its job is to define the
-physics, the symbols, and the assumptions that make the first notebook work.
+This companion stands apart from the notebook code, but it follows the same
+story as the notebook: start with a ping, track the echo delay, turn that
+delay into samples, and then turn samples back into range. Its job is to
+define the physics, the symbols, and the assumptions that make that story
+work.
+
+Read this companion first if you want the physical story in prose before you
+open the notebook and work through the code.
 
 ## 1. Active sonar in one sentence
 
@@ -22,13 +28,14 @@ an effective sound speed of:
 
 - `c = 1500 m/s`
 
-That number is slow enough that the student can feel the timing. A target tens
+That number is slow enough that you can feel the timing. A target tens
 of metres away does not return an echo in microseconds; it returns after a
 noticeable fraction of a second.
 
-This is the first major contrast with radar. Sonar is not just radar with new
-vocabulary. The much slower propagation speed changes the timing, the range
-scale, the ping rhythm, and the teaching priorities.
+The major difference between radar and sonar is the propagation speed.
+Electromagnetic waves travel much faster than sound, so the same physical
+distance shows up as a very different delay scale. That one change alters the
+timing, the range scale, and the ping rhythm in this notebook.
 
 ## 3. The transmit-listen rhythm
 
@@ -110,6 +117,8 @@ $$
 
 This 0.1 s delay is central to the whole early track. It is long enough to be
 visible and intuitive, and it fits comfortably inside the 0.2 s ping cycle.
+The notebook uses that delay in the same order the physics does: first as a
+time, then as samples, and finally as range.
 
 ## 5. Delay in samples
 
@@ -132,7 +141,7 @@ $$
 N_{delay} = 10000 \cdot 0.1 = 1000
 $$
 
-So the first useful mental picture for the learner is:
+So the first useful mental picture for you is:
 
 - target at 75 m
 - echo arrives after 0.1 s
@@ -168,13 +177,16 @@ answer:
 Those are deferred on purpose. The goal here is to make the first timing model
 solid before adding more physics.
 
-## 8. Carry-forward summary
+## 8. Summary
 
-The learner should leave Notebook 00 with four durable facts:
+You should leave Notebook 00 with four durable facts:
 
 - active sonar means ping first, then listen
 - sound speed in water sets the timing scale
 - measured echo delay is a round-trip quantity
 - sample delay is just the same physical delay written in digital form
+
+That is the whole arc of the notebook companion: a physical ping, a measured
+delay, a sample count, and a recovered range.
 
 Everything later in the course builds on those four facts.
