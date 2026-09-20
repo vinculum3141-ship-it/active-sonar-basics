@@ -77,6 +77,7 @@ target/
 
 # Jupyter Notebook
 .ipynb_checkpoints
+output/*.png
 
 # IPython
 profile_default/
